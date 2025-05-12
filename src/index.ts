@@ -1,15 +1,13 @@
 import 'reflect-metadata';
 import express from 'express';
 import cors from 'cors';
-import { DataSource } from 'typeorm';
 import swaggerUi from 'swagger-ui-express';
 import swaggerJsDoc from 'swagger-jsdoc';
-import { authRouter, todoRouter } from '@/routes';
-import { User, Todo } from '@/entities';
-import logger from './config/logger';
+import { indexRouter } from '@/routes';
+import { AppDataSource, env, logger } from '@/config';
 
 const app = express();
-const port = process.env.PORT || 3000;
+const port = env.PORT;
 
 // Middleware
 app.use(cors());
@@ -36,21 +34,8 @@ const swaggerOptions = {
 const swaggerDocs = swaggerJsDoc(swaggerOptions);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
-// Database configuration
-export const AppDataSource = new DataSource({
-  type: 'postgres',
-  url: process.env.DATABASE_URL,
-  synchronize: process.env.NODE_ENV === 'development',
-  logging: process.env.NODE_ENV === 'development',
-  entities: [User, Todo],
-  subscribers: [],
-  migrations: [],
-  entitySkipConstructor: true,
-});
-
 // Routes
-app.use('/api/auth', authRouter);
-app.use('/api/todos', todoRouter);
+app.use('/api', indexRouter);
 
 // Initialize database and start server
 AppDataSource.initialize()

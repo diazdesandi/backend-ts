@@ -1,11 +1,10 @@
 import { Request, Response } from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import { AppDataSource } from '../index';
 import { User } from '@/entities';
-import logger from '../config/logger';
+import { AppDataSource, env, logger } from '@/config';
 
-const secret = process.env.JWT_SECRET || 'your-super-secret-key';
+const secret = env.JWT_SECRET;
 
 export const register = async (req: Request, res: Response) => {
   try {

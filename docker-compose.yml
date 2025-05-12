@@ -1,28 +1,28 @@
 services:
+  db:
+    image: postgres:15-alpine
+    ports:
+      - "5432:5432" # Remove this line when deploying to production
+    env_file:
+      - .env
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
   app:
     build: .
     ports:
       - "3000:3000"
-    environment:
-      - NODE_ENV=development
-      - DATABASE_URL=postgresql://postgres:postgres@db:5432/tododb
-      - JWT_SECRET=your-super-secret-key
+    env_file:
+      - .env
     depends_on:
       - db
     volumes:
       - .:/app
       - /app/node_modules
-
-  db:
-    image: postgres:15-alpine
-    ports:
-      - "5432:5432"
-    environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=tododb
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
 
 volumes:
   postgres_data: 

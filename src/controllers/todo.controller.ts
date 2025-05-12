@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
-import { AppDataSource } from '../index';
+import { AppDataSource, logger } from '@/config';
 import { Todo } from '@/entities';
-import logger from '@/config/logger';
+
 export const createTodo = async (req: Request, res: Response) => {
   try {
     const { title, description } = req.body;

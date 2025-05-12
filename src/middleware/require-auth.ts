@@ -1,7 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
-import { AppDataSource } from '../index';
+import { AppDataSource, env } from '@/config';
 import { User } from '@/entities';
+
 
 interface JwtPayload {
   id: string;
@@ -31,7 +32,7 @@ export const requireAuth = async (
 
     const payload = jwt.verify(
       token,
-      process.env.JWT_SECRET || 'your-super-secret-key'
+      env.JWT_SECRET
     ) as JwtPayload;
 
     const userRepository = AppDataSource.getRepository(User);
